@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "684569280812",
+    "project_id": "bongdavui-1cb29",
+    "storage_bucket": "bongdavui-1cb29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684569280812:android:dd4015169e551cb233ec89",
+        "android_client_info": {
+          "package_name": "com.ntl.bongdavui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684569280812-npjcve25q400uub422388qql5irb513b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7Gt7HkU0w6Du72ttEMxj6LtCe9TOpo3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684569280812-npjcve25q400uub422388qql5irb513b.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "684569280812-tsfqkr752qkcsra2rc2k1ic2396p1je7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ntl.bongdavui"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
