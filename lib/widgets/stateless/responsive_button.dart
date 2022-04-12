@@ -5,7 +5,7 @@ import 'package:bongdavui/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../widget_styles/widget_styles.dart';
+import '../../modules/new_user/widget_styles/widget_styles.dart';
 
 class ResponsiveButton extends StatelessWidget {
   final String type;
@@ -25,11 +25,13 @@ class ResponsiveButton extends StatelessWidget {
       onPressed: () {
         onTap();
       },
-      style: type == AppConstants.typeFacebook
-          ? WidgetStyles.styleButtonLogin(AppColors.facebook)
-          : WidgetStyles.styleButtonLogin(AppColors.google),
+      style: type == AppConstants.typeNormal
+          ? WidgetStyles.styleButtonLogin(AppColors.primaryColor)
+          : type == AppConstants.typeFacebook
+              ? WidgetStyles.styleButtonLogin(AppColors.facebook)
+              : WidgetStyles.styleButtonLogin(AppColors.google),
       child: Container(
-        height: AppSizes.s_60,
+        height: AppSizes.s_50,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppSizes.s_8),
             border: Border.all(color: Colors.grey, width: 0)),
@@ -39,9 +41,11 @@ class ResponsiveButton extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(left: AppSizes.s_20),
               child: FaIcon(
-                type == AppConstants.typeFacebook
-                    ? FontAwesomeIcons.facebook
-                    : FontAwesomeIcons.google,
+                type == AppConstants.typeNormal
+                    ? null
+                    : type == AppConstants.typeFacebook
+                        ? FontAwesomeIcons.facebook
+                        : FontAwesomeIcons.google,
                 color: AppColors.white,
               ),
             ),

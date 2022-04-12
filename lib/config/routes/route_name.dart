@@ -1,6 +1,7 @@
 class RouteName {
-  static const String routePage = 'RootPage';
-  static const String homePage = 'HomePage';
-  static const String signInPage = 'SingInPage';
-  static const String editPage = 'editPage';
+  static const String rootRoute = "/root";
+  static const String mainRoute = "/main";
+  static const String homeRoute = "/home";
+  static const String newFieldRoute = "/newFieldRoute";
+  static const String signInRoute = "/signInRoute";
 }

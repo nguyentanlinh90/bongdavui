@@ -13,6 +13,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
   List pages = [
     HomePage(),
     MyProfilePage(),
@@ -29,29 +30,14 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primaryColor,
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryColor,
-        elevation: 0,
-        title: Text('Home Page'),
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Container(
-              alignment: Alignment.center,
-              child: FaIcon(
-                FontAwesomeIcons.angleLeft,
-                size: AppSizes.s_30,
-              )),
-        ),
-      ),
+      backgroundColor: AppColors.white,
+
       body: pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         unselectedFontSize: 0,
         selectedFontSize: 0,
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.primaryColor,
         onTap: onTap,
         currentIndex: currentIndex,
         selectedItemColor: Colors.black,
@@ -60,8 +46,20 @@ class _MainPageState extends State<MainPage> {
         showSelectedLabels: false,
         elevation: 0,
         items: [
-          BottomNavigationBarItem(label: "Home", icon: Icon(Icons.apps)),
-          BottomNavigationBarItem(label: "My Profile", icon: Icon(Icons.person)),
+          BottomNavigationBarItem(
+              activeIcon: Icon(
+                Icons.sports_soccer_outlined,
+                size: 30,
+                color: AppColors.white,
+              ),
+              label: "Home",
+              icon: Icon(
+                Icons.sports_soccer_outlined,
+                size: 30,
+                color: AppColors.blackGrey,
+              )),
+          BottomNavigationBarItem(
+              label: "My Profile", icon: Icon(Icons.person)),
         ],
       ),
     );

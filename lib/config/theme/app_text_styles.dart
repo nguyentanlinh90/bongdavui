@@ -48,26 +48,26 @@ class AppTextStyles {
   }
 
   static TextStyle h1() {
-    return GoogleFonts.sen(textStyle: const TextStyle(fontSize: 109.66));
+    return GoogleFonts.rubik(textStyle: const TextStyle(fontSize: 109.66));
   }
 
   static TextStyle h2() {
-    return GoogleFonts.sen(textStyle: const TextStyle(fontSize: 67.77));
+    return GoogleFonts.rubik(textStyle: const TextStyle(fontSize: 67.77));
   }
 
   static TextStyle h3() {
-    return GoogleFonts.sen(textStyle: const TextStyle(fontSize: 41.89));
+    return GoogleFonts.rubik(textStyle: const TextStyle(fontSize: 41.89));
   }
 
   static TextStyle h4() {
-    return GoogleFonts.sen(textStyle: const TextStyle(fontSize: 25.89));
+    return GoogleFonts.rubik(textStyle: const TextStyle(fontSize: 25.89));
   }
 
   static TextStyle h5() {
-    return GoogleFonts.sen(textStyle: const TextStyle(fontSize: 16));
+    return GoogleFonts.rubik(textStyle: const TextStyle(fontSize: 16));
   }
 
   static TextStyle h6() {
-    return GoogleFonts.sen(textStyle: const TextStyle(fontSize: 9.89));
+    return GoogleFonts.rubik(textStyle: const TextStyle(fontSize: 9.89));
   }
 }
