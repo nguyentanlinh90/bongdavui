@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loading_overlay/loading_overlay.dart';
 
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_text_styles.dart';
@@ -42,6 +43,8 @@ class _NewFieldPageState extends State<NewFieldPage> {
     _imageFileList = value == null ? null : <XFile>[value];
   }
 
+  bool _isLoading = false;
+
   @override
   void dispose() {
     nameController.dispose();
@@ -63,45 +66,62 @@ class _NewFieldPageState extends State<NewFieldPage> {
         ),
         leading: const ButtonBack(),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: size.width * 0.02, vertical: size.height * 0.02),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    (_imageFileList == null ||
-                            _imageFileList!.length == 0 ||
-                            _pickImageError != null)
-                        ? buttonAddImage(context)
-                        : gridImage(),
-                    BoxSpace(height: size.height * 0.01),
-                    InputField(
-                      controller: nameController,
-                      label: AppString.nameField,
-                      maxLength: 50,
-                    ),
-                    BoxSpace(height: size.height * 0.01),
-                    InputField(
-                      controller: phoneController,
-                      label: AppString.phoneField,
-                      maxLength: 10,
-                      textInputType: TextInputType.phone,
-                    ),
-                    BoxSpace(height: size.height * 0.01),
-                  ],
+      body: LoadingOverlay(
+        isLoading: _isLoading,
+        color: AppColors.primaryColor,
+        progressIndicator: const CircularProgressIndicator(
+          color: AppColors.primaryColor,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: size.width * 0.02, vertical: size.height * 0.02),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      (_imageFileList == null ||
+                              _imageFileList!.isEmpty ||
+                              _pickImageError != null)
+                          ? buttonAddImage(context)
+                          : gridImage(),
+                      BoxSpace(height: size.height * 0.01),
+                      InputField(
+                        controller: nameController,
+                        label: AppString.nameField,
+                        maxLength: 50,
+                      ),
+                      BoxSpace(height: size.height * 0.01),
+                      InputField(
+                        controller: phoneController,
+                        label: AppString.phoneField,
+                        maxLength: 10,
+                        textInputType: TextInputType.phone,
+                      ),
+                      BoxSpace(height: size.height * 0.01),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            ResponsiveButton(
-                type: AppConstants.typeNormal,
-                btText: AppString.addField,
-                onTap: () {
-                  addField();
-                }),
-          ],
+              ResponsiveButton(
+                  type: AppConstants.typeNormal,
+                  btText: AppString.addField,
+                  onTap: () {
+                    setState(() {
+                      _isLoading = true;
+                      addField(() {
+                        setState(() {
+                          _isLoading = false;
+                          _imageFileList = [];
+                          nameController.text = '';
+                          phoneController.text = '';
+                        });
+                      });
+                    });
+                  }),
+            ],
+          ),
         ),
       ),
     );
@@ -243,7 +263,7 @@ class _NewFieldPageState extends State<NewFieldPage> {
         padding: const EdgeInsets.all(AppSizes.s_16),
         child: Column(
           children: [
-            FaIcon(
+            const FaIcon(
               FontAwesomeIcons.fileImage,
               size: AppSizes.s_50,
               color: AppColors.primaryColor,
@@ -262,55 +282,60 @@ class _NewFieldPageState extends State<NewFieldPage> {
     );
   }
 
-  Future<void> addField() {
+  Future<void> addField(VoidCallback callback) {
     if (nameController.text.isNotEmpty && phoneController.text.isNotEmpty) {}
     FieldModel $fieldModel =
         FieldModel(nameController.text, [phoneController.text]);
 
     return fields
         .add($fieldModel.toJson())
-        .then((value) => {
-                  uploadImage(_imageFileList!, value.id, context)
-                } /*showDialog(
-            barrierDismissible: true,
-            context: context,
-            builder: (context) {
-              return AppDialog(
-                  title: AppString.congratulation,
-                  content: AppString.contentNewFieldSuccess,
-                  yes: AppString.yes);
-            })*/
-            )
+        .then((value) =>
+            uploadImage(_imageFileList!, value.id, context, callback))
         .catchError((error) => print('Error: $error'));
   }
 }
 
-Future<String> uploadFile(String path, XFile image) async {
-  Reference storageReference =
-      FirebaseStorage.instance.ref().child('$path/${image.name}');
-  UploadTask uploadTask = storageReference.putFile(File(image.path));
-  await uploadTask.whenComplete(() => {print('lin lin lin')});
-
-  return await storageReference.getDownloadURL();
-}
-
-void uploadImage(List<XFile> _imageFileList, fieldID, context) async {
+void uploadImage(
+    List<XFile> _imageFileList, fieldID, context, VoidCallback callback) async {
   if (_imageFileList.isNotEmpty) {
-    //await Future.wait(_imageFileList.map((image) => uploadFile("${FirebaseStorePath.fields}/$fieldID", image)));
     final storageRef = FirebaseStorage.instance
         .ref()
         .child('${FirebaseStorePath.fields}/$fieldID');
+
     int countImage = _imageFileList.length;
+    List<String> urlDownloads = [];
+
     for (int i = 0; i < countImage; i++) {
       final path = _imageFileList[i].path;
       final file = File(path);
       final name = _imageFileList[i].name;
-      // final metadata = SettableMetadata(contentType: "image/jpeg");
-      UploadTask uploadTask =
-          storageRef.child(name).putFile(file /*, metadata*/);
-      // await uploadTask.whenComplete(() => {print('lin lin lin')});
-      // Listen for state changes, errors, and completion of the upload.
-      uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
+
+      UploadTask uploadTask = storageRef.child(name).putFile(file);
+
+      var urlDownload = await (await uploadTask).ref.getDownloadURL();
+      urlDownloads.add(urlDownload);
+      if (urlDownloads.length == countImage) {
+        FirebaseFirestore.instance
+            .collection(FirebaseStorePath.fields)
+            .doc(fieldID)
+            .update({FieldModel.images: urlDownloads})
+            .then((value) => {
+                  callback(),
+                  showDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (context) {
+                        return AppDialog(
+                            title: AppString.congratulation,
+                            content: AppString.contentNewFieldSuccess,
+                            yes: AppString.yes);
+                      })
+                })
+            .catchError((error) => {print('Failed lin: $error'), callback()});
+      }
+
+      // });
+      /*uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
         switch (taskSnapshot.state) {
           case TaskState.running:
             final progress = 100.0 *
@@ -327,22 +352,32 @@ void uploadImage(List<XFile> _imageFileList, fieldID, context) async {
             // Handle unsuccessful uploads
             break;
           case TaskState.success:
-            countImage--;
-            print('linhnt ' +countImage.toString());
+            print('333');
+
+            print('linhnt 3' + countImage.toString());
             if (countImage == 0) {
-              showDialog(
-                  barrierDismissible: true,
-                  context: context,
-                  builder: (context) {
-                    return AppDialog(
-                        title: AppString.congratulation,
-                        content: AppString.contentNewFieldSuccess,
-                        yes: AppString.yes);
-                  });
+              print('linhnt 1 ' + urlDownloads.toString());
+              print('linhnt 2 ' + urlDownloads.length.toString());
+              FirebaseFirestore.instance
+                  .collection(FirebaseStorePath.fields)
+                  .doc(fieldID)
+                  .update({'images': urlDownloads})
+                  .then((value) => {
+                        showDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (context) {
+                              return AppDialog(
+                                  title: AppString.congratulation,
+                                  content: AppString.contentNewFieldSuccess,
+                                  yes: AppString.yes);
+                            })
+                      })
+                  .catchError((error) => print('Failed lin: $error'));
             }
             break;
         }
-      });
+      });*/
     }
   }
 }

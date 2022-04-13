@@ -16,5 +16,6 @@ class AppString {
   static const String yes = 'Đồng ý';
   static const String contentNewFieldSuccess = 'Bạn đã thêm sân bóng thành công, chúng tôi sẽ kiểm duyệt trong vòng 24h. Xin chần thành cảm ơn về đóng góp của bạn!';
   static const String addImage = 'Thêm ảnh';
+  static const String pleaseWaiting = 'Vui lòng đợi...';
 
 }

@@ -37,9 +37,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
           backgroundColor: AppColors.primaryColor,
           elevation: 0,
-          title: Container(
-            child: TextField(),
-          ),
+          title: Text('Home'),
           leading: const ButtonBack(),
           actions: <Widget>[
             InkWell(
@@ -57,8 +55,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ]),
-      body: Container(
-          child: StreamBuilder<QuerySnapshot>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: fields,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasError) {
@@ -66,7 +63,7 @@ class _HomePageState extends State<HomePage> {
             return Text('Something wrong \n ${snapshot.error.toString()}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
                 color: AppColors.primaryColor,
               ),
@@ -84,11 +81,11 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /* Ink.image(
-                      image: NetworkImage(ds['images'][0]),
+                    Ink.image(
+                      image: NetworkImage(ds['images']?[0]),
                       height: 150,
                       fit: BoxFit.fill,
-                    ),*/
+                    ),
                     Container(
                         margin: const EdgeInsets.all(AppSizes.s_10),
                         child: Row(
@@ -116,7 +113,7 @@ class _HomePageState extends State<HomePage> {
             },
           );
         },
-      )),
+      ),
     );
   }
 }

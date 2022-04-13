@@ -1,4 +1,5 @@
 class FieldModel {
+  static String images = 'images';
   final String name;
   final List<String> phones;
 
