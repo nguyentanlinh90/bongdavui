@@ -25,8 +25,7 @@ class InputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      style: AppTextStyles.h5()
-          .copyWith(fontWeight: FontWeight.bold, color: AppColors.primaryColor),
+      style: AppTextStyles.h5().copyWith(color: AppColors.primaryColor),
       controller: controller,
       cursorColor: AppColors.primaryColor,
       obscureText: obscureText,

@@ -1,19 +1,21 @@
-import 'package:bongdavui/config/theme/app_colors.dart';
-import 'package:bongdavui/config/theme/app_text_styles.dart';
-import 'package:bongdavui/constants/app_constants.dart';
-import 'package:bongdavui/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../modules/new_user/widget_styles/widget_styles.dart';
+import '../../config/theme/app_colors.dart';
+import '../../config/theme/app_text_styles.dart';
+import '../../constants/app_constants.dart';
+import '../../constants/app_sizes.dart';
+import '../../modules/user/widget_styles/widget_styles.dart';
 
 class ResponsiveButton extends StatelessWidget {
+  final bool enable;
   final String type;
   final String btText;
   final VoidCallback onTap;
 
   const ResponsiveButton({
     Key? key,
+    this.enable = true,
     required this.type,
     required this.btText,
     required this.onTap,
@@ -23,10 +25,11 @@ class ResponsiveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        onTap();
+        enable ? onTap() : null;
       },
       style: type == AppConstants.typeNormal
-          ? WidgetStyles.styleButtonLogin(AppColors.primaryColor)
+          ? WidgetStyles.styleButtonLogin(
+              AppColors.primaryColor.withOpacity(enable ? 1 : 0.5))
           : type == AppConstants.typeFacebook
               ? WidgetStyles.styleButtonLogin(AppColors.facebook)
               : WidgetStyles.styleButtonLogin(AppColors.google),
@@ -53,8 +56,7 @@ class ResponsiveButton extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 btText,
-                style: AppTextStyles.bold(AppSizes.s_16)
-                    .copyWith(color: AppColors.white),
+                style: AppTextStyles.h5().copyWith(color: AppColors.white),
               ),
             )
           ],

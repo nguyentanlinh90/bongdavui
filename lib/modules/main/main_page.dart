@@ -1,24 +1,19 @@
 import 'package:bongdavui/config/theme/app_colors.dart';
-import 'package:bongdavui/constants/app_sizes.dart';
+import 'package:bongdavui/models/user.dart';
 import 'package:bongdavui/modules/main/home/home_page.dart';
 import 'package:bongdavui/modules/main/my_profile/pages/my_profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final UserModel userModel;
+
+  const MainPage({Key? key, required this.userModel}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-
-  List pages = [
-    HomePage(),
-    MyProfilePage(),
-  ];
-
   int currentIndex = 0;
 
   void onTap(int index) {
@@ -29,9 +24,12 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    List pages = [
+      HomePage(),
+      MyProfilePage(userModel: widget.userModel),
+    ];
     return Scaffold(
       backgroundColor: AppColors.white,
-
       body: pages[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         unselectedFontSize: 0,

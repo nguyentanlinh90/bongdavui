@@ -38,6 +38,7 @@ dependencies:
   device_preview: ^1.0.0
   font_awesome_flutter: ^10.1.0
   firebase_core: ^1.14.0
+  firebase_auth: ^3.3.13
   cloud_firestore: ^3.1.11
   firebase_storage: ^10.2.11
   cached_network_image: ^3.2.0

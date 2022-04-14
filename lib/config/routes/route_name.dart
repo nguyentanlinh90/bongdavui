@@ -1,7 +1,8 @@
 class RouteName {
-  static const String rootRoute = "/root";
-  static const String mainRoute = "/main";
-  static const String homeRoute = "/home";
-  static const String newFieldRoute = "/newFieldRoute";
-  static const String signInRoute = "/signInRoute";
+  static const String root = "/root";
+  static const String main = "/main";
+  static const String home = "/home";
+  static const String newField = "/newField";
+  static const String login = "/login";
+  static const String signIn = "/signIn";
 }

@@ -18,7 +18,7 @@ class SkipButton extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (_) => MainPage()));
+              context, MaterialPageRoute(builder: (_) => Container()));
         },
         splashColor: Colors.black38,
         borderRadius: BorderRadius.circular(AppSizes.s_24),

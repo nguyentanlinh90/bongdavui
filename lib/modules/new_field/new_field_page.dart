@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:bongdavui/constants/app_sizes.dart';
 import 'package:bongdavui/constants/firebase_store_path.dart';
-import 'package:bongdavui/models/field_model.dart';
+import 'package:bongdavui/models/field.dart';
+import 'package:bongdavui/services/firebase_storage_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -110,13 +110,24 @@ class _NewFieldPageState extends State<NewFieldPage> {
                   onTap: () {
                     setState(() {
                       _isLoading = true;
-                      addField(() {
-                        setState(() {
-                          _isLoading = false;
-                          _imageFileList = [];
-                          nameController.text = '';
-                          phoneController.text = '';
-                        });
+                    });
+
+                    addField(() {
+                      // add field success
+                      setState(() {
+                        _isLoading = false;
+                        _imageFileList = [];
+                        nameController.text = '';
+                        phoneController.text = '';
+                        showDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (context) {
+                              return AppDialog(
+                                  title: AppString.congratulation,
+                                  content: AppString.contentNewFieldSuccess,
+                                  yes: AppString.yes);
+                            });
                       });
                     });
                   }),
@@ -284,100 +295,32 @@ class _NewFieldPageState extends State<NewFieldPage> {
 
   Future<void> addField(VoidCallback callback) {
     if (nameController.text.isNotEmpty && phoneController.text.isNotEmpty) {}
-    FieldModel $fieldModel =
-        FieldModel(nameController.text, [phoneController.text]);
+    FieldModel $fieldModel = FieldModel(
+        !FieldModel.active, nameController.text, [phoneController.text]);
+    // add fields to Firestore
+    return FirebaseHelper.addDocumentField($fieldModel, (isAdded, fieldId) {
+      if (isAdded) {
+        //upload images field to Storage
+        if (_imageFileList!.isNotEmpty) {
+          FirebaseHelper.uploadImages(
+              '${FirebaseStorePath.fields}/$fieldId', _imageFileList!,
+              (isUpload, urlDownloadList) {
+            if (isUpload) {
+              //upload images to storage success
+              final images = {FieldModel.images: urlDownloadList};
 
-    return fields
-        .add($fieldModel.toJson())
-        .then((value) =>
-            uploadImage(_imageFileList!, value.id, context, callback))
-        .catchError((error) => print('Error: $error'));
-  }
-}
-
-void uploadImage(
-    List<XFile> _imageFileList, fieldID, context, VoidCallback callback) async {
-  if (_imageFileList.isNotEmpty) {
-    final storageRef = FirebaseStorage.instance
-        .ref()
-        .child('${FirebaseStorePath.fields}/$fieldID');
-
-    int countImage = _imageFileList.length;
-    List<String> urlDownloads = [];
-
-    for (int i = 0; i < countImage; i++) {
-      final path = _imageFileList[i].path;
-      final file = File(path);
-      final name = _imageFileList[i].name;
-
-      UploadTask uploadTask = storageRef.child(name).putFile(file);
-
-      var urlDownload = await (await uploadTask).ref.getDownloadURL();
-      urlDownloads.add(urlDownload);
-      if (urlDownloads.length == countImage) {
-        FirebaseFirestore.instance
-            .collection(FirebaseStorePath.fields)
-            .doc(fieldID)
-            .update({FieldModel.images: urlDownloads})
-            .then((value) => {
-                  callback(),
-                  showDialog(
-                      barrierDismissible: true,
-                      context: context,
-                      builder: (context) {
-                        return AppDialog(
-                            title: AppString.congratulation,
-                            content: AppString.contentNewFieldSuccess,
-                            yes: AppString.yes);
-                      })
-                })
-            .catchError((error) => {print('Failed lin: $error'), callback()});
-      }
-
-      // });
-      /*uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) {
-        switch (taskSnapshot.state) {
-          case TaskState.running:
-            final progress = 100.0 *
-                (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
-            print("Upload is $progress% complete.");
-            break;
-          case TaskState.paused:
-            print("Upload is paused.");
-            break;
-          case TaskState.canceled:
-            print("Upload was canceled");
-            break;
-          case TaskState.error:
-            // Handle unsuccessful uploads
-            break;
-          case TaskState.success:
-            print('333');
-
-            print('linhnt 3' + countImage.toString());
-            if (countImage == 0) {
-              print('linhnt 1 ' + urlDownloads.toString());
-              print('linhnt 2 ' + urlDownloads.length.toString());
-              FirebaseFirestore.instance
-                  .collection(FirebaseStorePath.fields)
-                  .doc(fieldID)
-                  .update({'images': urlDownloads})
-                  .then((value) => {
-                        showDialog(
-                            barrierDismissible: true,
-                            context: context,
-                            builder: (context) {
-                              return AppDialog(
-                                  title: AppString.congratulation,
-                                  content: AppString.contentNewFieldSuccess,
-                                  yes: AppString.yes);
-                            })
-                      })
-                  .catchError((error) => print('Failed lin: $error'));
+              //Update images to fields on Firestore
+              FirebaseHelper.updateDocumentField(fieldId, images,
+                  (isUpdate, message) {
+                if (isUpdate) {
+                  //all success
+                  callback();
+                }
+              });
             }
-            break;
+          });
         }
-      });*/
-    }
+      }
+    });
   }
 }

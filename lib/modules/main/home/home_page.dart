@@ -1,4 +1,3 @@
-import 'package:bongdavui/business/firebse_helper.dart';
 import 'package:bongdavui/config/theme/app_colors.dart';
 import 'package:bongdavui/config/theme/app_text_styles.dart';
 import 'package:bongdavui/constants/app_sizes.dart';
@@ -10,7 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../config/routes/route_name.dart';
-import '../../../widgets/stateless/button_back.dart';
+import '../../../services/firebase_storage_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -37,18 +36,18 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
           backgroundColor: AppColors.primaryColor,
           elevation: 0,
+          automaticallyImplyLeading: false,
           title: Text('Home'),
-          leading: const ButtonBack(),
           actions: <Widget>[
             InkWell(
               onTap: () {
-                Navigator.of(context).pushNamed(RouteName.newFieldRoute);
+                Navigator.of(context).pushNamed(RouteName.newField);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSizes.s_16),
                 child: Container(
                     alignment: Alignment.center,
-                    child: FaIcon(
+                    child: const FaIcon(
                       FontAwesomeIcons.plus,
                       size: AppSizes.s_30,
                     )),
@@ -59,7 +58,7 @@ class _HomePageState extends State<HomePage> {
         stream: fields,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasError) {
-            print(snapshot.error.toString());
+            print('bvd error load fields ' + snapshot.error.toString());
             return Text('Something wrong \n ${snapshot.error.toString()}');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -74,42 +73,44 @@ class _HomePageState extends State<HomePage> {
             itemCount: data.size,
             itemBuilder: (BuildContext context, int index) {
               DocumentSnapshot ds = data.docs[index]; //
-              return Card(
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Ink.image(
-                      image: NetworkImage(ds['images']?[0]),
-                      height: 150,
-                      fit: BoxFit.fill,
-                    ),
-                    Container(
-                        margin: const EdgeInsets.all(AppSizes.s_10),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Sân bóng ${ds['name']}',
-                                style: AppTextStyles.h5().copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: AppSizes.s_20),
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                FirebaseHelper.deleteDocument(
-                                    data.docs[index].reference);
-                              },
-                              child: FaIcon(FontAwesomeIcons.trashCan),
-                            )
-                          ],
-                        ))
-                  ],
-                ),
-              );
+              return ds['isActive']
+                  ? Container()
+                  : Card(
+                      clipBehavior: Clip.antiAlias,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Ink.image(
+                            image: NetworkImage(ds['images']?[0]),
+                            height: 150,
+                            fit: BoxFit.fill,
+                          ),
+                          Container(
+                              margin: const EdgeInsets.all(AppSizes.s_10),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Sân bóng ${ds['name']}',
+                                      style: AppTextStyles.h5().copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: AppSizes.s_20),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      FirebaseHelper.deleteDocument(
+                                          data.docs[index].reference);
+                                    },
+                                    child: FaIcon(FontAwesomeIcons.trashCan),
+                                  )
+                                ],
+                              ))
+                        ],
+                      ),
+                    );
             },
           );
         },

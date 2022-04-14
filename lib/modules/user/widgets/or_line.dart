@@ -23,8 +23,7 @@ class OrLine extends StatelessWidget {
               const EdgeInsets.only(right: AppSizes.s_10, left: AppSizes.s_10),
           child: Text(
             AppString.or,
-            style: AppTextStyles.black(AppSizes.s_20)
-                .copyWith(color: AppColors.blackGrey),
+            style: AppTextStyles.h5().copyWith(color: AppColors.blackGrey, fontWeight: FontWeight.bold),
           ),
         ),
         Expanded(
