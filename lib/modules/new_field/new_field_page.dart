@@ -15,6 +15,7 @@ import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_text_styles.dart';
 import '../../constants/app_constants.dart';
 import '../../constants/app_strings.dart';
+import '../../widgets/items/itemImage.dart';
 import '../../widgets/stateless/app_dialog.dart';
 import '../../widgets/stateless/box_space.dart';
 import '../../widgets/stateless/button_back.dart';
@@ -35,7 +36,7 @@ class _NewFieldPageState extends State<NewFieldPage> {
   TextEditingController phoneController = TextEditingController();
 
   final ImagePicker _picker = ImagePicker();
-  List<XFile>? _imageFileList = [];
+  List<XFile>? _imageFileList = <XFile>[];
   String? _retrieveDataError;
   dynamic _pickImageError;
 
@@ -81,11 +82,11 @@ class _NewFieldPageState extends State<NewFieldPage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      (_imageFileList == null ||
-                              _imageFileList!.isEmpty ||
-                              _pickImageError != null)
-                          ? buttonAddImage(context)
-                          : gridImage(),
+
+                      //_viewGridImage(),//gridImage(),
+                      _viewGridImage(),// gridImage()
+                      BoxSpace(height: size.height * 0.01),
+                      buttonAddImage(context),
                       BoxSpace(height: size.height * 0.01),
                       InputField(
                         controller: nameController,
@@ -145,41 +146,20 @@ class _NewFieldPageState extends State<NewFieldPage> {
       return retrieveError;
     }
     if (_imageFileList != null) {
-      return GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-          ),
-          shrinkWrap: true,
-          itemCount: _imageFileList!.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Card(
-              clipBehavior: Clip.antiAlias,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8)),
-              color: AppColors.primaryColor,
-              child: Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  Image.file(File(_imageFileList![index].path)),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _imageFileList?.removeAt(index);
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          primary: AppColors.white,
-                          padding: const EdgeInsets.all(0)),
-                      child: const FaIcon(
-                        FontAwesomeIcons.xmark,
-                        size: AppSizes.s_30,
-                        color: AppColors.black,
-                      ))
-                ],
-              ),
-            );
-          });
+      return initGridView();
+      // return GridView.builder(
+      //
+      //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      //       crossAxisCount: 3,
+      //     ),
+      //    // physics: const NeverScrollableScrollPhysics(),
+      //     shrinkWrap: true,
+      //     itemCount: _imageFileList!.length,
+      //     itemBuilder: (BuildContext context, int index) {
+      //       return ItemImage(item:_imageFileList?[index] ,remove: (){
+      //         _removeItem(index);
+      //       },);
+      //     });
     } else if (_pickImageError != null) {
       return Text(
         'Pick image error: $_pickImageError',
@@ -192,7 +172,26 @@ class _NewFieldPageState extends State<NewFieldPage> {
       );
     }
   }
+  GridView initGridView(){
+    return GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      children: List.generate(_imageFileList!.length, (index) {
+        return ItemImage(item:_imageFileList?[index],remove:(){
+          _removeItem(index);
+        });
 
+      }),
+    );
+
+  }
+   _removeItem(int index) {
+    setState(() {
+     // _imageFileList!.reversed.toList().removeAt(index);
+      _imageFileList!.removeAt(index);
+    });
+
+  }
   Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
       final Text result = Text(_retrieveDataError!);
@@ -210,13 +209,21 @@ class _NewFieldPageState extends State<NewFieldPage> {
     if (response.file != null) {
       setState(() {
         _imageFile = response.file;
-        _imageFileList = response.files;
+        //_imageFile
+       // _imageFileList = response.files;
+        _imageFileList!.addAll(response.files!);
+
       });
     } else {
       _retrieveDataError = response.exception!.code;
     }
   }
-
+Widget _viewGridImage(){
+    return Center(
+      child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android?
+      _imageFileList!.isNotEmpty?initGridView():Container():_previewImages()
+    );
+}
   Center gridImage() {
     return Center(
       child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
