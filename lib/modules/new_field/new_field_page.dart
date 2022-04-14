@@ -146,20 +146,17 @@ class _NewFieldPageState extends State<NewFieldPage> {
       return retrieveError;
     }
     if (_imageFileList != null) {
-      return initGridView();
-      // return GridView.builder(
-      //
-      //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      //       crossAxisCount: 3,
-      //     ),
-      //    // physics: const NeverScrollableScrollPhysics(),
-      //     shrinkWrap: true,
-      //     itemCount: _imageFileList!.length,
-      //     itemBuilder: (BuildContext context, int index) {
-      //       return ItemImage(item:_imageFileList?[index] ,remove: (){
-      //         _removeItem(index);
-      //       },);
-      //     });
+      return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+          ),
+          shrinkWrap: true,
+          itemCount: _imageFileList!.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ItemImage(item:_imageFileList?[index] ,remove: (){
+              _removeItem(index);
+            },);
+          });
     } else if (_pickImageError != null) {
       return Text(
         'Pick image error: $_pickImageError',
@@ -172,7 +169,7 @@ class _NewFieldPageState extends State<NewFieldPage> {
       );
     }
   }
-  GridView initGridView(){
+  GridView _initGridView(){
     return GridView.count(
       crossAxisCount: 3,
       shrinkWrap: true,
@@ -183,11 +180,9 @@ class _NewFieldPageState extends State<NewFieldPage> {
 
       }),
     );
-
   }
    _removeItem(int index) {
     setState(() {
-     // _imageFileList!.reversed.toList().removeAt(index);
       _imageFileList!.removeAt(index);
     });
 
@@ -221,7 +216,8 @@ class _NewFieldPageState extends State<NewFieldPage> {
 Widget _viewGridImage(){
     return Center(
       child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android?
-      _imageFileList!.isNotEmpty?initGridView():Container():_previewImages()
+      _imageFileList!.isNotEmpty?_previewImages():Container():_previewImages()
+     // _imageFileList!.isNotEmpty?_initGridView():Container():_initGridView() // todo  cách 2 của cái GridView()
     );
 }
   Center gridImage() {
