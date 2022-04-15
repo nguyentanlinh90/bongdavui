@@ -20,7 +20,8 @@ class RouterSetting {
         }
       case RouteName.main:
         {
-          UserModel userModel = settings.arguments;
+          //todo
+          UserModel userModel = settings.arguments as UserModel;
           return MaterialPageRoute(builder: (_) => MainPage(userModel: userModel));
         }
       /*case RouteName.editPage:

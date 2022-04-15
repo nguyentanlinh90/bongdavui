@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bongdavui/constants/app_sizes.dart';
 import 'package:bongdavui/constants/firebase_store_path.dart';
 import 'package:bongdavui/models/field.dart';
@@ -15,14 +13,9 @@ import 'package:loading_overlay/loading_overlay.dart';
 
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_text_styles.dart';
-import '../../constants/app_constants.dart';
 import '../../constants/app_strings.dart';
 import '../../widgets/items/itemImage.dart';
-import '../../widgets/stateless/app_dialog.dart';
-import '../../widgets/stateless/box_space.dart';
-import '../../widgets/stateless/button_back.dart';
 import '../../widgets/stateless/input_field.dart';
-import '../../widgets/stateless/responsive_button.dart';
 
 class NewFieldPage extends StatefulWidget {
   const NewFieldPage({Key? key}) : super(key: key);
@@ -58,7 +51,8 @@ class _NewFieldPageState extends FootBallBaseScreen<NewFieldPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return screenWithKeyboard(context,
+    return screenWithKeyboard(
+      context,
       Scaffold(
         appBar: baseAppBar(context, AppString.addField),
         body: LoadingOverlay(
@@ -76,9 +70,8 @@ class _NewFieldPageState extends FootBallBaseScreen<NewFieldPage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-
                         //_viewGridImage(),//gridImage(),
-                        _viewGridImage(),// gridImage()
+                        _viewGridImage(), // gridImage()
                         spaceHeight(size.height * 0.01),
                         buttonAddImage(context),
                         spaceHeight(size.height * 0.01),
@@ -99,30 +92,30 @@ class _NewFieldPageState extends FootBallBaseScreen<NewFieldPage> {
                     ),
                   ),
                 ),
-                buttonSubmit(AppString.addField, (){
+                buttonSubmit(AppString.addField, () {
                   log('onSubmit');
-                        addField(() {
-                          // add field success
-                          if(mounted){
-                            setState(() {
-                              _isLoading = false;
-                              _imageFileList = [];
-                              nameController.text = '';
-                              phoneController.text = '';
-                              showMessage(AppString.congratulation, AppString.contentNewFieldSuccess);
-                              // showDialog(
-                              //     barrierDismissible: true,
-                              //     context: context,
-                              //     builder: (context) {
-                              //       return AppDialog(
-                              //           title: AppString.congratulation,
-                              //           content: AppString.contentNewFieldSuccess,
-                              //           yes: AppString.yes);
-                              //     });
-                            });
-                          }
-
-                        });
+                  addField(() {
+                    // add field success
+                    if (mounted) {
+                      setState(() {
+                        _isLoading = false;
+                        _imageFileList = [];
+                        nameController.text = '';
+                        phoneController.text = '';
+                        showMessage(AppString.congratulation,
+                            AppString.contentNewFieldSuccess);
+                        // showDialog(
+                        //     barrierDismissible: true,
+                        //     context: context,
+                        //     builder: (context) {
+                        //       return AppDialog(
+                        //           title: AppString.congratulation,
+                        //           content: AppString.contentNewFieldSuccess,
+                        //           yes: AppString.yes);
+                        //     });
+                      });
+                    }
+                  });
                 })
                 // ResponsiveButton(
                 //     type: AppConstants.typeNormal,
@@ -184,9 +177,12 @@ class _NewFieldPageState extends FootBallBaseScreen<NewFieldPage> {
           shrinkWrap: true,
           itemCount: _imageFileList!.length,
           itemBuilder: (BuildContext context, int index) {
-            return ItemImage(item:_imageFileList?[index] ,remove: (){
-              _removeItem(index);
-            },);
+            return ItemImage(
+              item: _imageFileList?[index],
+              remove: () {
+                _removeItem(index);
+              },
+            );
           });
     } else if (_pickImageError != null) {
       return Text(
@@ -200,24 +196,27 @@ class _NewFieldPageState extends FootBallBaseScreen<NewFieldPage> {
       );
     }
   }
-  GridView _initGridView(){
+
+  GridView _initGridView() {
     return GridView.count(
       crossAxisCount: 3,
       shrinkWrap: true,
       children: List.generate(_imageFileList!.length, (index) {
-        return ItemImage(item:_imageFileList?[index],remove:(){
-          _removeItem(index);
-        });
-
+        return ItemImage(
+            item: _imageFileList?[index],
+            remove: () {
+              _removeItem(index);
+            });
       }),
     );
   }
-   _removeItem(int index) {
+
+  _removeItem(int index) {
     setState(() {
       _imageFileList!.removeAt(index);
     });
-
   }
+
   Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
       final Text result = Text(_retrieveDataError!);
@@ -236,21 +235,25 @@ class _NewFieldPageState extends FootBallBaseScreen<NewFieldPage> {
       setState(() {
         _imageFile = response.file;
         //_imageFile
-       // _imageFileList = response.files;
+        // _imageFileList = response.files;
         _imageFileList!.addAll(response.files!);
-
       });
     } else {
       _retrieveDataError = response.exception!.code;
     }
   }
-Widget _viewGridImage(){
+
+  Widget _viewGridImage() {
     return Center(
-      child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android?
-      _imageFileList!.isNotEmpty?_previewImages():Container():_previewImages()
-     // _imageFileList!.isNotEmpty?_initGridView():Container():_initGridView() // todo  cách 2 của cái GridView()
-    );
-}
+        child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+            ? _imageFileList!.isNotEmpty
+                ? _previewImages()
+                : Container()
+            : _previewImages()
+        // _imageFileList!.isNotEmpty?_initGridView():Container():_initGridView() // todo  cách 2 của cái GridView()
+        );
+  }
+
   Center gridImage() {
     return Center(
       child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
