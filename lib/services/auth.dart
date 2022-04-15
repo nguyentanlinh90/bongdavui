@@ -23,20 +23,25 @@ class AuthService {
   }
 
   //sign in with email and pass
-  static Future loginWithEmailAndPassword(
-      String email, String password) async {
+  static Future signInWithEmailAndPassword(String email, String password,
+      Function(bool isSuccess, String data) callback) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-
-      return _userFromFirebase(result.user!);
+      callback(true, result.user!.uid);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        callback(false, AppString.userNotFound);
+      } else if (e.code == 'wrong-password') {
+        callback(false, AppString.wrongPassword);
+      }
     } catch (e) {
-      print('login error: ' + e.toString());
+      callback(false, e.toString());
     }
   }
 
-  //register with email and pass
-  static Future signInWithEmailAndPassword(String email, String pass,
+  //Registration with email and pass
+  static Future createUserWithEmailAndPassword(String email, String pass,
       Function(bool isSuccess, String data) callback) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
@@ -56,7 +61,7 @@ class AuthService {
 
   // get user
   static User? getUser() {
-    return  _auth.currentUser;
+    return _auth.currentUser;
   }
 
 //sign out

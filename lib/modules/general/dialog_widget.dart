@@ -1,5 +1,5 @@
-
 import 'package:bongdavui/config/theme/app_colors.dart';
+import 'package:bongdavui/constants/app_strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,26 +8,36 @@ import '../../widgets/general_widget.dart';
 
 Future<bool> _onWillPop(BuildContext context) async {
   return (await showDialog(
-    context: context,
-    builder: (context) => new AlertDialog(),
-  )) ?? false;
+        context: context,
+        builder: (context) => new AlertDialog(),
+      )) ??
+      false;
 }
-Widget generalMessage(BuildContext context,String title,String description, VoidCallback callback){
+
+Widget generalMessage(BuildContext context, String title, String description,
+    VoidCallback callback) {
   return WillPopScope(
-    onWillPop: () async => true,// todo disable back
-   // onWillPop: ()=>_onWillPop(context),
+    onWillPop: () async => true, // todo disable back
+    // onWillPop: ()=>_onWillPop(context),
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         spaceHeight(20),
         //Text(title.isEmpty?'Notify':title, style: const TextStyle(color: AppColors.primaryColor,fontSize: 15),),
-        textBold(title.isEmpty?'Notify':title),
+        textBold(title.isEmpty ? AppString.alert : title),
         spaceHeight(20),
-        const Divider(height: 1,color: AppColors.gray,),
+        const Divider(
+          height: 1,
+          color: AppColors.gray,
+        ),
         spaceHeight(20),
         Padding(
-          padding: const EdgeInsets.only(left: 10,right: 10),
-          child: Text(description, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.textColor,fontSize: 15),),
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: Text(
+            description,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: AppColors.textColor, fontSize: 15),
+          ),
         ),
         spaceHeight(20),
         InkWell(
@@ -41,9 +51,10 @@ Widget generalMessage(BuildContext context,String title,String description, Void
           ),
         ),
 
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
       ],
     ),
   );
 }
-

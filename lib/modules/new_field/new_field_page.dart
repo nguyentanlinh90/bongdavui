@@ -79,22 +79,22 @@ class _NewFieldPageState extends FootBallBaseScreen<NewFieldPage> {
 
                         //_viewGridImage(),//gridImage(),
                         _viewGridImage(),// gridImage()
-                        BoxSpace(height: size.height * 0.01),
+                        spaceHeight(size.height * 0.01),
                         buttonAddImage(context),
-                        BoxSpace(height: size.height * 0.01),
+                        spaceHeight(size.height * 0.01),
                         InputField(
                           controller: nameController,
                           label: AppString.nameField,
                           maxLength: 50,
                         ),
-                        BoxSpace(height: size.height * 0.01),
+                        spaceHeight(size.height * 0.01),
                         InputField(
                           controller: phoneController,
                           label: AppString.phoneField,
                           maxLength: 10,
                           textInputType: TextInputType.phone,
                         ),
-                        BoxSpace(height: size.height * 0.01),
+                        spaceHeight(size.height * 0.01),
                       ],
                     ),
                   ),

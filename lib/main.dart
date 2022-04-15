@@ -4,7 +4,7 @@ import 'package:bongdavui/config/routes/router_setting.dart';
 import 'package:bongdavui/config/theme/app_colors.dart';
 import 'package:bongdavui/models/user.dart';
 import 'package:bongdavui/modules/main/main_page.dart';
-import 'package:bongdavui/modules/user/pages/login_page.dart';
+import 'package:bongdavui/modules/user/pages/sign_in.dart';
 import 'package:bongdavui/widgets/stateless/app_loading_overlay.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
             UserModel userModel = UserModel(uid: data!.uid, email: data.email!);
             return MainPage(userModel: userModel);
           } else {
-            return LoginPage();
+            return SignInPage();
           }
         });
   }

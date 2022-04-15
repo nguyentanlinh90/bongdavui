@@ -16,6 +16,11 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   void onTap(int index) {
     setState(() {
       currentIndex = index;

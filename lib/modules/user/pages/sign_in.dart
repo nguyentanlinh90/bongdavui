@@ -1,27 +1,28 @@
 import 'package:bongdavui/config/routes/route_name.dart';
-import 'package:bongdavui/models/user.dart';
 import 'package:bongdavui/modules/user/widgets/or_line.dart';
 import 'package:flutter/material.dart';
 
 import '../../../config/theme/app_colors.dart';
 import '../../../config/theme/app_text_styles.dart';
 import '../../../constants/app_constants.dart';
-import '../../../constants/app_sizes.dart';
 import '../../../constants/app_strings.dart';
 import '../../../services/auth.dart';
+import '../../../widgets/general_widget.dart';
 import '../../../widgets/stateless/input_field.dart';
 import '../../../widgets/stateless/responsive_button.dart';
+import '../../football_screen.dart';
 import '../widgets/forgot_pass.dart';
 import '../widgets/skip_button.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignInPage extends StatefulWidget {
+  const SignInPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignInPageState createState() => _SignInPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignInPageState extends FootBallBaseScreen<SignInPage> {
+  bool enableClick = true;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -40,12 +41,12 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 Text(
                   AppString.bongDaVui,
-                  style: AppTextStyles.bold(AppSizes.s_50)
-                      .copyWith(color: AppColors.blackGrey),
+                  style:
+                      AppTextStyles.h3().copyWith(color: AppColors.blackGrey),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(
-                  height: size.height * 0.02,
+                spaceHeight(
+                  size.height * 0.05,
                 ),
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                   //future
@@ -53,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
                       type: AppConstants.typeFacebook,
                       btText: AppString.loginWithFacebook,
                       onTap: () {}),
-                  SizedBox(
-                    height: size.height * 0.02,
+                  spaceHeight(
+                    size.height * 0.02,
                   ),
                   ResponsiveButton(
                     type: AppConstants.typeGoogle,
@@ -81,12 +82,12 @@ class _LoginPageState extends State<LoginPage> {
                               }));
                     },
                   ),
-                  SizedBox(
-                    height: size.height * 0.03,
+                  spaceHeight(
+                    size.height * 0.03,
                   ),
                   OrLine(),
-                  SizedBox(
-                    height: size.height * 0.03,
+                  spaceHeight(
+                    size.height * 0.03,
                   ),*/
                   InputField(
                     controller: emailController,
@@ -95,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                     onChange: () {},
                     onTextChanged: (text) {},
                   ),
-                  SizedBox(height: size.height * 0.01),
+                  spaceHeight(size.height * 0.01),
                   InputField(
                     controller: passwordController,
                     label: AppString.password,
@@ -108,22 +109,36 @@ class _LoginPageState extends State<LoginPage> {
                     onPress: () {},
                   ),
                   ResponsiveButton(
+                      enable: enableClick,
                       type: AppConstants.typeNormal,
                       btText: AppString.login,
                       onTap: () async {
+                        setState(() {
+                          enableClick = false;
+                        });
                         String email = emailController.text;
                         String pass = passwordController.text;
-                        UserModel user =
-                            await AuthService.loginWithEmailAndPassword(
-                                email, pass);
-
+                        await AuthService.signInWithEmailAndPassword(
+                            email, pass, (isSuccess, data) {
+                          if (isSuccess) {
+                            showMessage('', 'success');
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, RouteName.main, ModalRoute.withName('/'));
+                          } else {
+                            // _showMessage(context, data);
+                            showMessage('', data);
+                            setState(() {
+                              enableClick = true;
+                            });
+                          }
+                        });
                       }),
-                  SizedBox(
-                    height: size.height * 0.03,
+                  spaceHeight(
+                    size.height * 0.03,
                   ),
-                  OrLine(),
-                  SizedBox(
-                    height: size.height * 0.03,
+                  const OrLine(),
+                  spaceHeight(
+                    size.height * 0.03,
                   ),
                   ResponsiveButton(
                       type: AppConstants.typeNormal,
@@ -132,8 +147,8 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.of(context).pushNamed(RouteName.signIn);
                       }),
                 ]),
-                SizedBox(
-                  height: size.height * 0.03,
+                spaceHeight(
+                  size.height * 0.03,
                 ),
                 const SkipButton(),
               ],
