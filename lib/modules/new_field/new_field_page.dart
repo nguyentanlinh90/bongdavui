@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:bongdavui/constants/app_sizes.dart';
 import 'package:bongdavui/constants/firebase_store_path.dart';
 import 'package:bongdavui/models/field.dart';
+import 'package:bongdavui/modules/football_screen.dart';
 import 'package:bongdavui/services/firebase_storage_helper.dart';
+import 'package:bongdavui/widgets/general_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +31,7 @@ class NewFieldPage extends StatefulWidget {
   _NewFieldPageState createState() => _NewFieldPageState();
 }
 
-class _NewFieldPageState extends State<NewFieldPage> {
+class _NewFieldPageState extends FootBallBaseScreen<NewFieldPage> {
   CollectionReference fields = FirebaseFirestore.instance.collection('fields');
 
   TextEditingController nameController = TextEditingController();
@@ -56,83 +58,101 @@ class _NewFieldPageState extends State<NewFieldPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.primaryColor,
-        elevation: 0,
-        title: Text(
-          AppString.addField,
-          style: AppTextStyles.h4().copyWith(color: AppColors.white),
-        ),
-        leading: const ButtonBack(),
-      ),
-      body: LoadingOverlay(
-        isLoading: _isLoading,
-        color: AppColors.primaryColor,
-        progressIndicator: const CircularProgressIndicator(
+    return screenWithKeyboard(context,
+      Scaffold(
+        appBar: baseAppBar(context, AppString.addField),
+        body: LoadingOverlay(
+          isLoading: _isLoading,
           color: AppColors.primaryColor,
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: size.width * 0.02, vertical: size.height * 0.02),
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
+          progressIndicator: const CircularProgressIndicator(
+            color: AppColors.primaryColor,
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.02, vertical: size.height * 0.02),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
 
-                      //_viewGridImage(),//gridImage(),
-                      _viewGridImage(),// gridImage()
-                      BoxSpace(height: size.height * 0.01),
-                      buttonAddImage(context),
-                      BoxSpace(height: size.height * 0.01),
-                      InputField(
-                        controller: nameController,
-                        label: AppString.nameField,
-                        maxLength: 50,
-                      ),
-                      BoxSpace(height: size.height * 0.01),
-                      InputField(
-                        controller: phoneController,
-                        label: AppString.phoneField,
-                        maxLength: 10,
-                        textInputType: TextInputType.phone,
-                      ),
-                      BoxSpace(height: size.height * 0.01),
-                    ],
+                        //_viewGridImage(),//gridImage(),
+                        _viewGridImage(),// gridImage()
+                        BoxSpace(height: size.height * 0.01),
+                        buttonAddImage(context),
+                        BoxSpace(height: size.height * 0.01),
+                        InputField(
+                          controller: nameController,
+                          label: AppString.nameField,
+                          maxLength: 50,
+                        ),
+                        BoxSpace(height: size.height * 0.01),
+                        InputField(
+                          controller: phoneController,
+                          label: AppString.phoneField,
+                          maxLength: 10,
+                          textInputType: TextInputType.phone,
+                        ),
+                        BoxSpace(height: size.height * 0.01),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              ResponsiveButton(
-                  type: AppConstants.typeNormal,
-                  btText: AppString.addField,
-                  onTap: () {
-                    setState(() {
-                      _isLoading = true;
-                    });
-
-                    addField(() {
-                      // add field success
-                      setState(() {
-                        _isLoading = false;
-                        _imageFileList = [];
-                        nameController.text = '';
-                        phoneController.text = '';
-                        showDialog(
-                            barrierDismissible: true,
-                            context: context,
-                            builder: (context) {
-                              return AppDialog(
-                                  title: AppString.congratulation,
-                                  content: AppString.contentNewFieldSuccess,
-                                  yes: AppString.yes);
+                buttonSubmit(AppString.addField, (){
+                  log('onSubmit');
+                        addField(() {
+                          // add field success
+                          if(mounted){
+                            setState(() {
+                              _isLoading = false;
+                              _imageFileList = [];
+                              nameController.text = '';
+                              phoneController.text = '';
+                              showMessage(AppString.congratulation, AppString.contentNewFieldSuccess);
+                              // showDialog(
+                              //     barrierDismissible: true,
+                              //     context: context,
+                              //     builder: (context) {
+                              //       return AppDialog(
+                              //           title: AppString.congratulation,
+                              //           content: AppString.contentNewFieldSuccess,
+                              //           yes: AppString.yes);
+                              //     });
                             });
-                      });
-                    });
-                  }),
-            ],
+                          }
+
+                        });
+                })
+                // ResponsiveButton(
+                //     type: AppConstants.typeNormal,
+                //     btText: AppString.addField,
+                //     onTap: () {
+                //       setState(() {
+                //         _isLoading = true;
+                //       });
+                //
+                //       addField(() {
+                //         // add field success
+                //         setState(() {
+                //           _isLoading = false;
+                //           _imageFileList = [];
+                //           nameController.text = '';
+                //           phoneController.text = '';
+                //           showDialog(
+                //               barrierDismissible: true,
+                //               context: context,
+                //               builder: (context) {
+                //                 return AppDialog(
+                //                     title: AppString.congratulation,
+                //                     content: AppString.contentNewFieldSuccess,
+                //                     yes: AppString.yes);
+                //               });
+                //         });
+                //       });
+                //     }),
+              ],
+            ),
           ),
         ),
       ),
