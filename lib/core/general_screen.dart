@@ -26,12 +26,12 @@ abstract class GeneralScreen<T extends StatefulWidget> extends State<T> with Wid
   void initState() {
     initAll();
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => onReady());
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => onReady());
   }
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     disposeAll();
     super.dispose();
   }
@@ -66,7 +66,7 @@ abstract class GeneralScreen<T extends StatefulWidget> extends State<T> with Wid
   }
   void showLoading(bool show) {
     loadingView ??= LoadingView();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if(mounted){
         if (show) {
             loadingView!.show(context);

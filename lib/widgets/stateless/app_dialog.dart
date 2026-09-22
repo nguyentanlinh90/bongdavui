@@ -35,7 +35,7 @@ class AppDialog extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          style: TextButton.styleFrom(primary: AppColors.white),
+          style: TextButton.styleFrom(foregroundColor: AppColors.white),
           child: Text(
             no,
             style: AppTextStyles.h5().copyWith(
@@ -44,7 +44,7 @@ class AppDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-          style: TextButton.styleFrom(primary: AppColors.white),
+          style: TextButton.styleFrom(foregroundColor: AppColors.white),
           child: Text(
             yes,
             style: AppTextStyles.h5().copyWith(

@@ -13,7 +13,7 @@ class ForgotPass extends StatelessWidget {
     return Align(
       alignment: Alignment.topRight,
       child: TextButton(
-        style: TextButton.styleFrom(primary: AppColors.white),
+        style: TextButton.styleFrom(foregroundColor: AppColors.white),
         onPressed: onPress,
         child: Text(AppString.forgotPassword,
             style: AppTextStyles.h5().copyWith(

@@ -29,7 +29,7 @@ class ItemImage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                   shape: const CircleBorder(),
-                  primary: AppColors.white,
+                  backgroundColor: AppColors.white,
                   padding: const EdgeInsets.all(0)),
               child: const FaIcon(
                 FontAwesomeIcons.xmark,

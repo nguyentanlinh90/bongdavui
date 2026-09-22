@@ -9,16 +9,16 @@ import '../../widgets/general_widget.dart';
 Future<bool> _onWillPop(BuildContext context) async {
   return (await showDialog(
         context: context,
-        builder: (context) => new AlertDialog(),
+        builder: (context) => AlertDialog(),
       )) ??
       false;
 }
 
 Widget generalMessage(BuildContext context, String title, String description,
     VoidCallback callback) {
-  return WillPopScope(
-    onWillPop: () async => true, // todo disable back
-    // onWillPop: ()=>_onWillPop(context),
+  return PopScope(
+    canPop: true,
+    // onPopInvokedWithResult: (didPop, result) {},
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[

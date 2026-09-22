@@ -6,7 +6,7 @@ class WidgetStyles {
   static ButtonStyle styleButtonLogin(Color backgroundColor) {
     return ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 0),
-        primary: backgroundColor,
+        backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.s_8)));
   }

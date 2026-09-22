@@ -29,7 +29,7 @@ class ResponsiveButton extends StatelessWidget {
       },
       style: type == AppConstants.typeNormal
           ? WidgetStyles.styleButtonLogin(
-              AppColors.primaryColor.withOpacity(enable ? 1 : 0.5))
+              AppColors.primaryColor.withValues(alpha: enable ? 1 : 0.5))
           : type == AppConstants.typeFacebook
               ? WidgetStyles.styleButtonLogin(AppColors.facebook)
               : WidgetStyles.styleButtonLogin(AppColors.google),

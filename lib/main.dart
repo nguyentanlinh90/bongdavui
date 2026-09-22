@@ -6,22 +6,14 @@ import 'package:bongdavui/models/user.dart';
 import 'package:bongdavui/modules/main/main_page.dart';
 import 'package:bongdavui/modules/user/pages/sign_in.dart';
 import 'package:bongdavui/widgets/stateless/app_loading_overlay.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  /*runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(), // Wrap your app
-    ),
-  );*/
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -38,9 +30,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      useInheritedMediaQuery: true,
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
       // initialRoute: RouteName.main,
       onGenerateRoute: RouterSetting.generateRouter,
       theme: ThemeData(primaryColor: AppColors.primaryColor),

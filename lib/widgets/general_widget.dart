@@ -1,7 +1,5 @@
 import 'package:bongdavui/config/theme/app_colors.dart';
-import 'package:bongdavui/widgets/stateless/button_back.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_device_type/flutter_device_type.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../constants/app_sizes.dart';
@@ -10,7 +8,6 @@ import 'custom_text.dart';
 SafeArea deviceScreen({required Widget child}) {
   return SafeArea(
     top: false,
-    bottom: Device.get().isIphoneX ? true : false,
     child: child,
   );
 }
@@ -63,7 +60,7 @@ AppBar appBarWithoutBackButton(BuildContext context, String title) {
 
 Widget loadingCenter() {
   return Container(
-    color: Colors.white.withOpacity(0.5),
+    color: Colors.white.withValues(alpha: 0.5),
     child: const Center(
       child: CircularProgressIndicator(strokeWidth: 2
           // valueColor: AlwaysStoppedAnimation<Color>(AppColor.red),
@@ -121,7 +118,7 @@ BoxDecoration bgRadius(Color color, double radius) {
 BoxDecoration bgWithOpacity() {
   return BoxDecoration(
     borderRadius: BorderRadius.circular(5),
-    color: Colors.black12.withOpacity(0.2),
+    color: Colors.black12.withValues(alpha: 0.2),
   );
 }
 
@@ -143,7 +140,7 @@ BoxDecoration bgShadow(Color color, double radius) {
     color: color,
     boxShadow: [
       BoxShadow(
-        color: Colors.grey.withOpacity(0.2),
+        color: Colors.grey.withValues(alpha: 0.2),
         blurRadius: 0.5,
         offset: Offset(1, 1),
       ),
@@ -178,9 +175,7 @@ Widget buttonSubmit(String title, VoidCallback onSubmit) {
   return InkWell(
     child: Container(
       decoration: bgRadius(AppColors.primaryColor, 12),
-      padding: EdgeInsets.only(
-          top: Device.get().isPhone ? 12 : 14,
-          bottom: Device.get().isPhone ? 12 : 14),
+      padding: const EdgeInsets.only(top: 12, bottom: 12),
       child: Center(child: textWhiteLargeBold(title.toUpperCase())),
     ),
     onTap: onSubmit,

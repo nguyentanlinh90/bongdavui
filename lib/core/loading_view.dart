@@ -5,7 +5,7 @@ class LoadingView {
 
   void show(BuildContext context) {
     _progressOverlayEntry = _createdProgressEntry(context);
-    Overlay.of(context)!.insert(_progressOverlayEntry!);
+    Overlay.of(context).insert(_progressOverlayEntry!);
   }
 
   void hide() {

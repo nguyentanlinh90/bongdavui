@@ -5,11 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart'; //For StreamControlle
 
 
 class ConnectInternet{
-  //static final Connection _singleton = Connection._internal();
-  // Connection._internal();
-
   ConnectInternet();
-  // static Connection getInstance() => _singleton;
 
   StreamController? connectionChangeController;
 
@@ -21,11 +17,11 @@ class ConnectInternet{
   void onChangedListener() {
     connectionChangeController = StreamController.broadcast();
     _connectivity ??= Connectivity();
-    _connectivity!.onConnectivityChanged.listen((value) {
+    _connectivity!.onConnectivityChanged.listen((List<ConnectivityResult> results) {
       if(_isDisposed) {
         return;
       }
-      _updateConnectionStatus(value);
+      _updateConnectionStatus(results.isNotEmpty ? results.first : ConnectivityResult.none);
     });
   }
 
@@ -37,18 +33,20 @@ class ConnectInternet{
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-  //  print('result ${result.toString()}');
     switch (result) {
       case ConnectivityResult.wifi:
       case ConnectivityResult.mobile:
+      case ConnectivityResult.ethernet:
+      case ConnectivityResult.vpn:
+      case ConnectivityResult.bluetooth:
+      case ConnectivityResult.other:
+      case ConnectivityResult.satellite:
+        hasConnection = true;
         connectionChangeController!.sink.add(true);
         break;
       case ConnectivityResult.none:
         hasConnection = false;
         connectionChangeController!.sink.add(false);
-        break;
-      default:
-        hasConnection = true;
         break;
     }
   }
@@ -59,13 +57,10 @@ class ConnectInternet{
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         hasConnection = true;
-        //print('có');
       } else {
         hasConnection = false;
-       // print('không');
       }
     } on SocketException catch (_) {
-     // print('catch');
       hasConnection = false;
     }
 
@@ -78,33 +73,26 @@ class ConnectInternet{
   }
   void _connectionChange(ConnectivityResult result) {
     _updateConnectionStatus(result);
-    // _checkConnection();
   }
 
-  Future<bool> checkInternet()async {
-    bool hasConnection = true;
-    connectionChangeController = StreamController.broadcast();
-    _connectivity = Connectivity();
-    _connectivity!
-        .checkConnectivity()
-        .then((value) {
-      switch (value) {
-        case ConnectivityResult.wifi:
-        case ConnectivityResult.mobile:
-        //    print('có ConnectInternet');
-          hasConnection = true;
-          break;
-        case ConnectivityResult.none:
-        //    print('không ConnectInternet');
-          hasConnection = false;
-          break;
-        default:
-          hasConnection = true;
-          //  print('default ConnectInternet');
-          break;
-      }
-    });
-    return hasConnection;
+  Future<bool> checkInternet() async {
+    connectionChangeController ??= StreamController.broadcast();
+    _connectivity ??= Connectivity();
+    final List<ConnectivityResult> results =
+        await _connectivity!.checkConnectivity();
+    final value = results.isNotEmpty ? results.first : ConnectivityResult.none;
+    switch (value) {
+      case ConnectivityResult.wifi:
+      case ConnectivityResult.mobile:
+      case ConnectivityResult.ethernet:
+      case ConnectivityResult.vpn:
+      case ConnectivityResult.bluetooth:
+      case ConnectivityResult.other:
+      case ConnectivityResult.satellite:
+        return true;
+      case ConnectivityResult.none:
+        return false;
+    }
   }
 }
 

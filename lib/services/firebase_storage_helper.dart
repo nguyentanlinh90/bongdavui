@@ -51,7 +51,8 @@ class FirebaseHelper {
     final storageRef = _firebaseStorage.child(path);
     try {
       UploadTask uploadTask = storageRef.putFile(file);
-      final String urlDownload = await (await uploadTask).ref.getDownloadURL();
+      final snapshot = await uploadTask;
+      final String urlDownload = await snapshot.ref.getDownloadURL();
       callback(true, urlDownload);
     } on FirebaseException catch (error) {
       callback(false, error.toString());
@@ -70,8 +71,8 @@ class FirebaseHelper {
         final File file = File(files[i].path);
         UploadTask uploadTask = storageRef.child(files[i].name).putFile(file);
 
-        var urlDownload =
-            await (await uploadTask).ref.getDownloadURL();
+        final snapshot = await uploadTask;
+        var urlDownload = await snapshot.ref.getDownloadURL();
         urlDownloads.add(urlDownload);
 
         if (urlDownloads.length == files.length) {
